@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lagos Life Starter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      margin: 0;
+      padding: 24px;
+    }
+    .container {
+      max-width: 820px;
+      margin: auto;
+      background: #111827;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(90px, 1fr));
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .stat {
+      background: #1f2937;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    button {
+      background: #22c55e;
+      color: black;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    .log {
+      background: #0b1220;
+      padding: 14px;
+      border-radius: 8px;
+      min-height: 180px;
+    }
+    .location {
+      margin-bottom: 16px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Lagos Life Starter</h1>
+
+    <div class="location" id="location">Location: Yaba</div>
+
+    <div class="stats">
+      <div class="stat"><strong>Money</strong><br><span id="money">150</span></div>
+      <div class="stat"><strong>Energy</strong><br><span id="energy">80</span></div>
+      <div class="stat"><strong>Hunger</strong><br><span id="hunger">70</span></div>
+      <div class="stat"><strong>Mood</strong><br><span id="mood">75</span></div>
+      <div class="stat"><strong>Respect</strong><br><span id="respect">10</span></div>
+    </div>
+
+    <div class="actions">
+      <button onclick="work()">Work</button>
+      <button onclick="eat()">Eat</button>
+      <button onclick="rest()">Rest</button>
+      <button onclick="travel()">Travel</button>
+      <button onclick="socialize()">Socialize</button>
+      <button onclick="invest()">Invest</button>
+    </div>
+
+    <div class="log" id="log"></div>
+  </div>
+
+  <script>
+    const state = {
+      money: 150,
+      energy: 80,
+      hunger: 70,
+      mood: 75,
+      respect: 10,
+      location: 0,
+      locations: ["Yaba", "Lekki", "Surulere", "Victoria Island", "Ikeja"],
+      logEntries: []
+    };
+
+    function addLog(message) {
+      state.logEntries.unshift(message);
+      const log = document.getElementById("log");
+      log.innerHTML = state.logEntries
+        .slice(0, 8)
+        .map(entry => `<div>• ${entry}</div>`)
+        .join("");
+    }
+
+    function updateUI() {
+      document.getElementById("money").textContent = state.money;
+      document.getElementById("energy").textContent = state.energy;
+      document.getElementById("hunger").textContent = state.hunger;
+      document.getElementById("mood").textContent = state.mood;
+      document.getElementById("respect").textContent = state.respect;
+      document.getElementById("location").textContent =
+        "Location: " + state.locations[state.location];
+    }
+
+    function clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    }
+
+    function work() {
+      if (state.energy <= 10) {
+        addLog("Too tired to work. Rest first.");
+        return;
+      }
+      state.money += 80;
+      state.energy -= 20;
+      state.hunger -= 15;
+      state.mood += 5;
+      state.respect += 3;
+      addLog("You did a hustle and earned ₦80.");
+      updateUI();
+    }
+
+    function eat() {
+      state.money -= 25;
+      state.hunger += 30;
+      state.energy += 10;
+      state.mood += 5;
+      addLog("You bought food and felt better.");
+      updateUI();
+    }
+
+    function rest() {
+      state.energy += 25;
+      state.hunger -= 10;
+      state.mood += 8;
+      addLog("You rested and recovered some energy.");
+      updateUI();
+    }
+
+    function travel() {
+      state.location = (state.location + 1) % state.locations.length;
+      state.money -= 15;
+      state.energy -= 10;
+      state.mood += 4;
+      addLog("You traveled to another part of Lagos.");
+      updateUI();
+    }
+
+    function socialize() {
+      state.mood += 12;
+      state.respect += 5;
+      state.hunger -= 8;
+      addLog("You met friends and enjoyed the vibe.");
+      updateUI();
+    }
+
+    function invest() {
+      if (state.money < 60) {
+        addLog("You need more cash to invest.");
+        return;
+      }
+      state.money -= 60;
+      const gain = Math.random() > 0.5 ? 130 : 40;
+      state.money += gain;
+      state.respect += 10;
+      addLog("You invested and made a return of ₦" + gain + ".");
+      updateUI();
+    }
+
+    addLog("Welcome to Lagos. Build your life.");
+    updateUI();
+  </script>
+</body>
+</html>
